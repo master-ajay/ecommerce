@@ -9,12 +9,15 @@ import { BsCart } from "react-icons/bs";
 import { VscChromeClose } from "react-icons/vsc";
 import { BiMenuAltRight } from "react-icons/bi";
 import { IoMdHeartEmpty } from "react-icons/io";
+import { API_URL } from "../../utils/urls";
+import axios from "../../utils/axios";
 
 export default function Header() {
   const [mobileMenu, setMobileMenu] = useState<boolean>(false);
   const [showCatMenu, setShowCatMenu] = useState<boolean>(false);
   const [show, setShow] = useState<string>("translate-y-0");
   const [lastScrollY, setLastScrollY] = useState<number>(0);
+  const [categories, setCategories] = useState<any>(null);
 
   const controlNavbar = () => {
     if (window.scrollY > 200) {
@@ -37,6 +40,15 @@ export default function Header() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastScrollY]);
 
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    const response = await axios.get(`${API_URL}/api/categories?populate=*`);
+    setCategories(response.data.data);
+  };
+
   return (
     <header
       className={`w-full h-[50px] md:h-[80px] bg-white flex items-center 
@@ -46,12 +58,17 @@ export default function Header() {
         <Link href="/">
           <Image src={ReactLogo} alt={""} className="w-[40px] md:w-[60px]" />
         </Link>
-        <Menu showCatMenu={showCatMenu} setShowCatMenu={setShowCatMenu} />
+        <Menu
+          showCatMenu={showCatMenu}
+          setShowCatMenu={setShowCatMenu}
+          categories={categories}
+        />
         {mobileMenu && (
           <MenuMobile
             showCatMenu={showCatMenu}
             setShowCatMenu={setShowCatMenu}
             setMobileMenu={setMobileMenu}
+            categories={categories}
           />
         )}
         <div className="flex items-center gap-2 text-black">

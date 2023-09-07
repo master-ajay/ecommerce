@@ -6,6 +6,7 @@ interface MenuType {
   showCatMenu: boolean;
   setShowCatMenu: React.Dispatch<React.SetStateAction<boolean>>;
   setMobileMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  categories: any;
 }
 
 interface Navbar {
@@ -33,6 +34,7 @@ const MenuMobile = ({
   showCatMenu,
   setShowCatMenu,
   setMobileMenu,
+  categories,
 }: MenuType) => {
   return (
     <ul
@@ -54,18 +56,20 @@ const MenuMobile = ({
                 </div>
                 {showCatMenu && (
                   <ul className="bg-black/[0.05] -mx-5 mt-4 -mb-4">
-                    {subMenuData.map((submenu) => {
+                    {categories?.map(({ attributes: c, id }: any) => {
                       return (
                         <Link
-                          key={submenu.id}
-                          href="/"
+                          key={id}
+                          href={`/category/${c.slug}`}
                           onClick={() => {
                             setShowCatMenu(false);
                           }}
                         >
                           <li className="h-12 flex justify-between items-center px-3 hover:bg-black/[0.03] rounded-md">
-                            {submenu.name}
-                            <span className="opacity-50 text-sm">78</span>
+                            {c.name}
+                            <span className="opacity-50 text-sm">
+                              ({c.products.data?.length})
+                            </span>
                           </li>
                         </Link>
                       );
